@@ -1,0 +1,27 @@
+{
+  "name": "04-clima-app",
+  "version": "1.0.0",
+  "description": "Es una app para sbaer el clima de una ciudad",
+  "main": "main.js",
+  "scripts": {
+    "dev": "nodemon src/main.js --exec babel-node",
+    "build": "babel out-dir dist",
+    "start": "node dist/app.js",
+    "nodejs": "node src/main.js"
+  },
+  "keywords": [],
+  "author": "David Salinas Poma",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.14.8",
+    "@babel/node": "^7.14.7",
+    "@babel/preset-env": "^7.14.8"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "colors": "^1.4.0",
+    "dotenv": "^10.0.0",
+    "inquirer": "^8.1.2"
+  }
+}
