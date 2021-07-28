@@ -1,9 +1,15 @@
+const fs = require('fs');
 const axios = require('axios');
+const lodash = require('lodash');
 
 class Busquedas {
-  historial = ['La Paz', 'Sucre', 'Cochabamba'];
+  historial = [];
+  // ruta de la bse de datos
+  dbpath = 'src/db/dataBase.json';
+
   constructor() {
     // Todo: leer db si existe
+    this.db = this.leerDB();
   }
 
   // Parametros de MapBox
@@ -23,6 +29,15 @@ class Busquedas {
       units: 'metric',
       lang: 'es',
     };
+  }
+
+  get capitalizarHistorial() {
+    // Capìtalizar Cada palabra
+    let capitalizer = [];
+    this.historial.forEach((element) => {
+      capitalizer.push(lodash.capitalize(element));
+    });
+    return capitalizer;
   }
 
   // metodos de la clase
@@ -77,6 +92,49 @@ class Busquedas {
     } catch (error) {
       console.log('No pudo conectarse al servidor');
     }
+  }
+
+  // Metodo para agregar un historial de busquedas
+  agregarHistorial(lugar = '') {
+    // Todo: Prevenir duplicados
+    console.log(lugar);
+
+    // Validando duplicados
+    if (this.historial.includes(lugar.toLocaleLowerCase())) {
+      return;
+    }
+
+    // Agregar al inicio del arreglo
+    this.historial.unshift(lugar.toLocaleLowerCase());
+
+    // Grabar en DB
+    this.guardarDB();
+  }
+
+  // Guarda el historial el la BD
+  guardarDB() {
+    const payload = {
+      historial: this.historial,
+    };
+
+    try {
+      fs.writeFileSync(this.dbpath, JSON.stringify(payload));
+    } catch (error) {
+      console.log('No se realizo');
+    }
+  }
+
+  // Lee la info de la BD
+  leerDB() {
+    // Debe de existir
+    if (!fs.existsSync(this.dbpath)) {
+      return null;
+    }
+    // Si existe se comienza a leer la data del archivo
+    const info = fs.readFileSync(this.dbpath, { encoding: 'utf-8' });
+    const data = JSON.parse(info); // convertir de JSON a objeto
+
+    this.historial = data.historial;
   }
 }
 

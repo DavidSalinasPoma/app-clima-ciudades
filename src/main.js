@@ -30,9 +30,17 @@ class Main {
           // Seleccionar el lugar
           const idSeleccionado = await inquirer.listadoLugares(lugares);
 
-          const lugarSeleccionado = lugares.find(
-            (lugar) => lugar.id === idSeleccionado,
-          );
+          if (idSeleccionado === '0') {
+            continue;
+          }
+
+          const lugarSeleccionado = lugares.find((lugar) => {
+            return lugar.id === idSeleccionado;
+          });
+
+          // Guardar en DB
+          busquedas.agregarHistorial(lugarSeleccionado.nombre);
+
           // Los datos del clima
           const clima = await busquedas.climaLugar(
             lugarSeleccionado.lat,
@@ -51,7 +59,10 @@ class Main {
           console.log('Como esta el clima:'.green, clima.desc);
           break;
         case 2:
-          console.log('Los historiales son');
+          busquedas.capitalizarHistorial.forEach((lugar, id) => {
+            const idx = `${id + 1}.`.green;
+            console.log(`${idx} ${lugar}`);
+          });
           break;
         case 0:
           break;
